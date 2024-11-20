@@ -53,3 +53,9 @@ class MongoConn:
         results = db.collection[collection_name].update_one(filter_query, update_query, upsert=upsert)
         
         return results
+
+    def delete_data(self, query, collection_name):
+        db = self.get_mongo_client()
+        result = db.collection[collection_name].delete_one(query)  
+        
+        return result.deleted_count > 0

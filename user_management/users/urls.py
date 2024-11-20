@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import create_user,fetch_users
+from .views import UserView
 
 urlpatterns = [
-    path('create_user/', create_user),
-    path('fetch_users/', fetch_users)
-
+    path('users', UserView.as_view()),  # For POST and fetching all users
+    path('users/<str:user_id>', UserView.as_view(),name='user_detail'),
 ]
