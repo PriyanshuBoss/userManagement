@@ -1,4 +1,5 @@
 # serializers.py
+from mongo_utilities import MongoConn
 from rest_framework import serializers
 import uuid
 from datetime import datetime
@@ -85,6 +86,9 @@ class UserSerializer(serializers.Serializer):
     def create(self, validated_data):
         validated_data['user_id'] = str(uuid.uuid4())
         validated_data = self.validate(validated_data)
+
+        # with MongoConn() as mongo_conn:
+        #     mongo_conn.insert_data(validated_data, 'users')
     
         return validated_data
 
