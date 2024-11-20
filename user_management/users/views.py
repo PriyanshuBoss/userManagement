@@ -14,8 +14,8 @@ class UserView(APIView):
         if serializer.is_valid():
             
             with MongoConn() as mongo_conn:
-                mongo_conn.insert_data(serializer.validated_data, 'users')
-                serializer.save()
+                validated_data = serializer.save()
+                mongo_conn.insert_data(validated_data, 'users')
             
             return Response({'success': True, 'data': serializer.data}, status=status.HTTP_201_CREATED)
         
@@ -94,7 +94,7 @@ class UserView(APIView):
     def delete(self, request, user_id):
         try:
             with MongoConn() as mongo_conn:
-                delete_result = mongo_conn.delete_data({'user_id': user_id}, 'users')
+                delete_result = mongo_conn.delete_data({'email': user_id}, 'users')
 
                 if delete_result:
                     return Response({'success': True}, status=status.HTTP_200_OK)
