@@ -1,8 +1,8 @@
 # serializers.py
 from rest_framework import serializers
 import uuid
+from datetime import datetime
 from rest_framework.exceptions import ValidationError
-from mongo_utilities import MongoConn
 
 class UserSerializer(serializers.Serializer):
     user_id = serializers.CharField(read_only=True)
@@ -50,11 +50,27 @@ class UserSerializer(serializers.Serializer):
         firstname = data.get('firstname', None)
         lastname = data.get('lastname', None)
 
-        if firstname and lastname:  # Only check if both fields are provided
+        if firstname and lastname:
             if firstname.lower() == lastname.lower():
                 raise serializers.ValidationError("First name and last name cannot be the same.")
 
         return data
+
+    def validate_dob(self, value):
+        """
+        Validates the date of birth (dob) field.
+        """
+        try:
+            dob = datetime.strptime(value, "%Y-%m-%d").date()
+            
+            if dob > datetime.now().date():
+                raise serializers.ValidationError("Date of birth cannot be in the future.")
+
+            return value
+
+        except ValueError:
+            # Raise an error if the format is invalid
+            raise serializers.ValidationError("Invalid date format. Use YYYY-MM-DD.")
 
 
     def create(self, validated_data):
