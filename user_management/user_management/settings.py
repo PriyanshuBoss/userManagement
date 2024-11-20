@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -127,6 +131,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 MONGO_CLIENT = {
-    'db' : os.getenv('MONGO_DB', 'users'),
-    'url': 'mongodb://Admin1:Zaamo%401234@4.224.241.87:18210'
+    'db' : os.getenv('MONGO_DB'),
+    'url': os.getenv("MONGO_URL")
 }

@@ -16,7 +16,7 @@ class UserView(APIView):
             print(x)
             return Response({'success': True, 'data': serializer.data}, status=status.HTTP_201_CREATED)
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     
     def get(self, request, user_id=None):
