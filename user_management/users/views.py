@@ -94,7 +94,7 @@ class UserView(APIView):
     def delete(self, request, user_id):
         try:
             with MongoConn() as mongo_conn:
-                delete_result = mongo_conn.delete_data({'email': user_id}, 'users')
+                delete_result = mongo_conn.delete_data({'user_id': user_id}, 'users')
 
                 if delete_result:
                     return Response({'success': True}, status=status.HTTP_200_OK)
