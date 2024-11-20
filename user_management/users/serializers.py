@@ -15,6 +15,11 @@ class UserSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15)
 
     def validate_phone_number(self, value):
+
+        """
+        Validates the phone number field.
+        """
+
         if len(value) != 10:
             raise serializers.ValidationError("Phone number must be exactly 10 digits.")
         
@@ -24,6 +29,7 @@ class UserSerializer(serializers.Serializer):
         return value
 
     def validate_firstname(self, value):
+
         if len(value) < 2:
             raise serializers.ValidationError("First name should be at least 2 characters long.")
         return value
@@ -47,6 +53,9 @@ class UserSerializer(serializers.Serializer):
 
     
     def validate(self, data):
+        """
+        Validates first name and last name is not same.
+        """
         firstname = data.get('firstname', None)
         lastname = data.get('lastname', None)
 
