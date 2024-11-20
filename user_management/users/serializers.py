@@ -47,9 +47,12 @@ class UserSerializer(serializers.Serializer):
 
     
     def validate(self, data):
+        firstname = data.get('firstname', None)
+        lastname = data.get('lastname', None)
 
-        if data.get('firstname', '').lower() == data.get('lastname', '').lower():
-            raise serializers.ValidationError("First name and last name cannot be the same.")
+        if firstname and lastname:  # Only check if both fields are provided
+            if firstname.lower() == lastname.lower():
+                raise serializers.ValidationError("First name and last name cannot be the same.")
 
         return data
 
@@ -57,10 +60,7 @@ class UserSerializer(serializers.Serializer):
     def create(self, validated_data):
         validated_data['user_id'] = str(uuid.uuid4())
         validated_data = self.validate(validated_data)
-        
-        mongo_conn = MongoConn()
-        mongo_conn.insert_data(validated_data, 'users')
-
+    
         return validated_data
 
 
@@ -68,17 +68,12 @@ class UserSerializer(serializers.Serializer):
         """
         Updates only the fields that have changed in MongoDB
         """
-        # Constructing the update query
         update_data = {}
 
-        # Only update the fields that have been changed
         for field, value in validated_data.items():
-            # Use `$set` to only update the changed fields
             update_data[field] = value
 
-        # If no fields were passed, raise an error (this might happen if validated_data is empty)
         if not update_data:
             raise ValidationError("No fields to update.")
 
-        # Returning the update query to be used by the view for MongoDB update
         return {'$set': update_data}
