@@ -1,5 +1,4 @@
-import time
-from pymongo import MongoClient, UpdateOne
+from pymongo import MongoClient
 from user_management.settings import MONGO_CLIENT
 
 class MongoConn:
@@ -14,19 +13,27 @@ class MongoConn:
             self.db = self.client[MONGO_CLIENT.get('db')]
         
         return self.db
+
+    def close_connection(self):
+
+        if self.client:
+            self.client.close()
+            self.client = None
+            self.db = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close_connection()
     
     def insert_data(self, post, collection_name):
+        
         try:
             db = self.get_mongo_client()
             result = db.collection[collection_name].insert_one(post)
 
-            # Check if insertion was successful
-            if result.acknowledged:
-                print("Data inserted successfully!")
-                return result.inserted_id  # Optionally return the inserted document's ID
-            else:
-                print("Data insertion failed.")
-                return None
+            return result.acknowledged
         
         except Exception as e:
             print(str(e))
